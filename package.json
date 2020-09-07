@@ -1,0 +1,42 @@
+{
+    "name": "playground2",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "deploy": "gh-pages -d dist",
+        "build": "webpack --progress",
+        "gulp": "gulp"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rohangaikwad/playground2.git"
+    },
+    "author": "Rohan Gaikwad",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/rohangaikwad/playground2/issues"
+    },
+    "homepage": "https://github.com/rohangaikwad/playground2#readme",
+    "dependencies": {},
+    "devDependencies": {
+        "autoprefixer": "^9.8.6",
+        "css-loader": "^4.2.2",
+        "file-loader": "^6.1.0",
+        "gh-pages": "^3.1.0",
+        "gulp": "^4.0.2",
+        "gulp-cli": "^2.3.0",
+        "gulp-concat": "^2.6.1",
+        "gulp-postcss": "^8.0.0",
+        "gulp-rename": "^2.0.0",
+        "gulp-sass": "^4.1.0",
+        "gulp-terser": "^1.4.0",
+        "gulp-uglify": "^3.0.2",
+        "json-loader": "^0.5.7",
+        "monaco-editor": "^0.20.0",
+        "style-loader": "^1.2.1",
+        "terser-webpack-plugin": "^4.1.0",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12"
+    }
+}
