@@ -11,70 +11,71 @@
 <body>
 
     <div class="main-container">
-        <section id="tools">
-            <div class="menu-bar">
-                <ul id="menu">
-                    <li class="has-menu">
-                        <span>File</span>
-                        <ul>
-                            <li><span>New File</span></li>
-                            <li><span>New Project</span></li>
-                            <li class="seperator"></li>
-                            <li><span>Open File</span></li>
-                            <li><span>Open Project</span></li>
-                            <li><span>Import Project</span></li>
-                            <li class="seperator"></li>
-                            <li><span>Save File</span></li>
-                            <li><span>Export Project</span></li>
-                            <li class="seperator"></li>
-                            <li><span>Close File</span></li>
-                            <li><span>Close Project</span></li>
-                        </ul>
-                    </li>
-                    <li class="has-menu">
-                        <span>Edit</span>
-                        <ul>
-                            <li><span>Undo</span></li>
-                            <li><span>Redo</span></li>
-                            <li class="seperator"></li>
-                            <li><span>Cut</span></li>
-                            <li><span>Copy</span></li>
-                            <li><span>Paste</span></li>
-                            <li class="seperator"></li>
-                            <li><span>Find</span></li>
-                            <li><span>Replace</span></li>
-                            <li class="seperator"></li>
-                            <li><span>Format Document</span></li>
-                            <li><span>Minify Document</span></li>
-                        </ul>
-                    </li>
-                    <li class="has-menu">
-                        <span>Editor Settings</span>
-                        <ul>
-                            <li class="has-menu">
-                                <span>Color Theme</span>
-                                <ul>
-                                    <li>VS</li>
-                                    <li>VS-Dark</li>
-                                    <li>VS-Black</li>
-                                    <li class="active">Synthwave' 84ish</li>
-                                </ul>
-                            </li>
-                            <li class="seperator"></li>
-                            <li><span>Show Line Numbers</span></li>
-                            <li><span>Show Minimap</span></li>
-                        </ul>
-                    </li>
-                    <li class="has-menu">
-                        <span>About</span>
-                        <ul>
-                            <li><span>Visit Repository</span></li>
-                            <li><span>About</span></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="window">
+        <div class="menu-bar">
+            <ul id="menu">
+                <li class="has-menu">
+                    <span>File</span>
+                    <ul>
+                        <li><span>New File</span></li>
+                        <li><span>New Project</span></li>
+                        <li class="seperator"></li>
+                        <li><span>Open File</span></li>
+                        <li><span>Open Project</span></li>
+                        <li><span>Import Project</span></li>
+                        <li class="seperator"></li>
+                        <li><span>Save File</span></li>
+                        <li><span>Export Project</span></li>
+                        <li class="seperator"></li>
+                        <li><span>Close File</span></li>
+                        <li><span>Close Project</span></li>
+                    </ul>
+                </li>
+                <li class="has-menu">
+                    <span>Edit</span>
+                    <ul>
+                        <li><span>Undo</span></li>
+                        <li><span>Redo</span></li>
+                        <li class="seperator"></li>
+                        <li><span>Cut</span></li>
+                        <li><span>Copy</span></li>
+                        <li><span>Paste</span></li>
+                        <li class="seperator"></li>
+                        <li><span>Find</span></li>
+                        <li><span>Replace</span></li>
+                        <li class="seperator"></li>
+                        <li><span>Format Document</span></li>
+                        <li><span>Minify Document</span></li>
+                    </ul>
+                </li>
+                <li class="has-menu">
+                    <span>Editor Settings</span>
+                    <ul>
+                        <li class="has-menu">
+                            <span>Color Theme</span>
+                            <ul>
+                                <li>VS</li>
+                                <li>VS-Dark</li>
+                                <li>VS-Black</li>
+                                <li class="active">Synthwave' 84ish</li>
+                            </ul>
+                        </li>
+                        <li class="seperator"></li>
+                        <li><span>Show Line Numbers</span></li>
+                        <li><span>Show Minimap</span></li>
+                    </ul>
+                </li>
+                <li class="has-menu">
+                    <span>About</span>
+                    <ul>
+                        <li><span>Visit Repository</span></li>
+                        <li><span>About</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="app">
+            <section id="tools">
                 <div class="tool-switcher">
                     <ul>
                         <li class="action">
@@ -97,44 +98,44 @@
                 </div>
 
                 <div class="ide-window">
-                    <div class="tabs">
-                        <div class="tab active" type="html">
-                            <span class="name" type="html">index.html</span>
-                            <span class="close-tab codicon"></span>
-                        </div>
-                        <div class="tab" type="js">
-                            <span class="name" type="js">main.js</span>
-                            <span class="close-tab codicon"></span>
-                        </div>
-                        <div class="tab" type="css">
-                            <span class="name" type="css">style.css</span>
-                            <span class="close-tab codicon"></span>
-                        </div>
-                    </div>
+                    <div class="tabs"></div>
                     <div id="ide-container"></div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="preview">
-            <div class="navigation">
-                <div class="refresh">
-                    <div class="btn codicon refresh"></div>
+            <section id="preview">
+                <div class="navigation">
+                    <div class="refresh">
+                        <div class="btn codicon refresh"></div>
+                    </div>
+                    <div class="search-bar">
+                        <input type="text">
+                    </div>
                 </div>
-                <div class="search-bar">
-                    <input type="text">
+                <div class="browser">
+                    <iframe srcdoc="" sandbox="allow-same-origin allow-scripts"></iframe>
                 </div>
-            </div>
-            <div class="browser">
-                <iframe srcdoc="" sandbox="allow-same-origin allow-scripts"></iframe>
-            </div>
-        </section>
+            </section>
+        </div>
+
+        <div class="status-bar">
+
+        </div>
     </div>
 
     <script src="./js/monaco/app.bundle.js"></script>
     <script src="./js/main.js"></script>
 
     <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then((reg) => {
+                    //console.log('service worked registered');
+                    //console.log(reg);
+                })
+                .catch(err => console.log(err));
+        }
+
         let style = document.querySelector('#style');
         setInterval(() => updateStyle(), 2000);
         let updateStyle = () => {

@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-        app: './src/js/monaco.js',
+        app: './src/js/wrappers/Monaco.js',
         'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
         'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
         'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
