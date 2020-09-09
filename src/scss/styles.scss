@@ -161,7 +161,7 @@ ul { margin: 0; padding: 0; list-style: none; }
         }
 
         #ide-container {
-            grid-row: 2 / span 1; height: 100%;
+            grid-row: 2 / span 1; height: 100%; overflow: hidden;
             .monaco-editor {
                 width: 100%!important; max-height: 100%;
                 //> .overflow-guard { max-width: 100%; }
