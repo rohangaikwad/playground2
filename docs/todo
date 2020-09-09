@@ -1,0 +1,25 @@
+// init default files (if new project)
+// build tree
+// build html file list for browser dropdown
+// bind click events
+// populate tree in file list
+// activate file sidebar
+// set active file
+// open active file in editor
+
+// set active html file
+// build html
+// populate iframe
+
+
+
+
+//wishlist
+
+// pip embedded video
+// different editors to preserve undo redo history
+// destroy editors
+// handle anchor tags - page navigation/
+// base64
+// placeholder images
+// diff check
