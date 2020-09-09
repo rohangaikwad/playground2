@@ -28,9 +28,9 @@ let defaultProjectFiles = [
     },
     {
         id: 'file_4',
-        name: "style.scss",
-        path: "css/style.scss",
-        type: "scss",
+        name: "style.css",
+        path: "css/style.css",
+        type: "css",
         contents: `* { box-sizing: border-box; }`
     },
     {
