@@ -78,15 +78,14 @@ module.exports = {
         let tabElem = document.querySelector(`.tab[data-id="${file_id}"]`);
         tabElem.parentNode.removeChild(tabElem);
 
-        if (tabList.length > 0) {
-            tabIndex--;
-            tabIndex = tabIndex > 0 ? tabIndex : 0;
-
+        let length = tabList.length;
+        if (length > 0) {
+            tabIndex = tabIndex >= length ? length - 1 : tabIndex;
             this.selectTab(tabList[tabIndex].id);
+        } else {
+            EditorHelper.unloadAll();
         }
     },
     closeAllTabs: function () {
-        tabList = [];
-        tabsElem.innerHTML = "";
     }
 }

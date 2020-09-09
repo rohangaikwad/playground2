@@ -55,7 +55,7 @@ module.exports = {
     },
     getActiveFile: function() {
         let fileIndex = files.findIndex(file => file.id == activeFile);
-        return files[fileIndex];
+        return fileIndex > -1 ? files[fileIndex] : null;
     },
     setActiveFile: function(file_id) {
         activeFile = file_id;

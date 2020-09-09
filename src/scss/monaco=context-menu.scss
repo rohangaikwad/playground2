@@ -1,0 +1,42 @@
+.monaco-action-bar {
+	text-align: right; overflow: hidden; white-space: nowrap;
+
+	.actions-container { display: flex; margin: 0 auto; padding: 0; width: 100%; justify-content: flex-end; }
+
+	&.vertical .actions-container { display: inline-block; }
+	&.reverse .actions-container { flex-direction: row-reverse; }
+  
+	.action-item { 
+		cursor: pointer; display: inline-block; transition: transform 50ms ease; position: relative; 
+		/* DO NOT REMOVE - this is the key to preventing the ghosting icon bug in Chrome 42 */ 
+		&.disabled { cursor: default; }
+	}
+ 
+
+	&.animated .action-item.active { transform: scale(1.272019649, 1.272019649); }
+
+  	.action-item {		
+		.codicon { display: inline-block; }
+  	}
+
+  	.action-label { font-size: 11px; margin-right: 4px; }
+
+  	.action-item.disabled .action-label {
+		opacity: 0.4;
+	    &:hover { opacity: 0.4; }
+  	}
+
+  	&.vertical {
+		text-align: left;
+		.action-item { display: block; }
+		.action-label.separator { display: block; border-bottom: 1px solid #bbb; padding-top: 1px; margin-left: 0.8em; margin-right: 0.8em; }
+  	}
+
+  	&.animated.vertical .action-item.active { transform: translate(5px, 0); }
+}
+
+/* Vertical actions */
+.secondary-actions .monaco-action-bar .action-label { margin-left: 6px; }
+
+/* Action Items */
+.monaco-action-bar .action-item.select-container { overflow: hidden; flex: 1; max-width: 170px; min-width: 60px; display: flex; align-items: center; justify-content: center; margin-right: 10px; }

@@ -10,7 +10,7 @@ module.exports = {
         editor = monaco.editor.create(targetElem, options);
         editor.onDidChangeModelContent(function (e) {
             let file = FileManager.getActiveFile();
-            file.contents = editor.getValue();
+            if(file != null) file.contents = editor.getValue();
         });
 
         this.remeasureFonts();
@@ -36,6 +36,12 @@ module.exports = {
             this.changeLanguage(file.type);
             this.setValue(file.contents);
         }
+    },
+    unloadAll: function () {
+        debugger;
+        FileManager.setActiveFile('');
+        this.setValue('');
+        this.changeLanguage('html');
     }
 }
 },{"./FileManager":2}],2:[function(require,module,exports){
@@ -69,9 +75,9 @@ let defaultProjectFiles = [
     },
     {
         id: 'file_4',
-        name: "style.scss",
-        path: "css/style.scss",
-        type: "scss",
+        name: "style.css",
+        path: "css/style.css",
+        type: "css",
         contents: `* { box-sizing: border-box; }`
     },
     {
@@ -96,7 +102,7 @@ module.exports = {
     },
     getActiveFile: function() {
         let fileIndex = files.findIndex(file => file.id == activeFile);
-        return files[fileIndex];
+        return fileIndex > -1 ? files[fileIndex] : null;
     },
     setActiveFile: function(file_id) {
         activeFile = file_id;
@@ -317,16 +323,15 @@ module.exports = {
         let tabElem = document.querySelector(`.tab[data-id="${file_id}"]`);
         tabElem.parentNode.removeChild(tabElem);
 
-        if (tabList.length > 0) {
-            tabIndex--;
-            tabIndex = tabIndex > 0 ? tabIndex : 0;
-
+        let length = tabList.length;
+        if (length > 0) {
+            tabIndex = tabIndex >= length ? length - 1 : tabIndex;
             this.selectTab(tabList[tabIndex].id);
+        } else {
+            EditorHelper.unloadAll();
         }
     },
     closeAllTabs: function () {
-        tabList = [];
-        tabsElem.innerHTML = "";
     }
 }
 },{"./EditorHelper":1,"./FileManager":2}],7:[function(require,module,exports){

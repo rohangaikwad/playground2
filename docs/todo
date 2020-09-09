@@ -1,28 +1,35 @@
-// init default files (if new project)
-// build tree
-// build html file list for browser dropdown
-// bind click events
-// populate tree in file list
-// activate file sidebar
-// set active file
-// open active file in editor
+- open html file in iframe
+- create new file
+- create new folder
+- open file from system
+- open external file from url
+- close project
+- new project
+- save project to local storage
+- list projects in local storage
+- plugins
+    - css
+        - autoprefixer
+        - scss to css
+    - js
+        - transpile to es2015
+    - html
+        - insert placeholder images
+- edit
+    - minify
+    - beautify
 
-// set active html file
-// build html
-// populate iframe
-
-
-
-
-//wishlist
-
-// pip embedded video
-// different editors to preserve undo redo history
-// destroy editors
-// handle anchor tags - page navigation/
-// base64
-// placeholder images
-// diff check
+Wishlist
+- diffchecker
+- pip embedded video
+- preserve undo redo history
+- css to scss
+- handle anchor tags - page navigation/
+- base64
+- placeholder images
+- github oauth for gist
+- emmet
+- snippets
 
 https://microsoft.github.io/vscode-codicons/dist/codicon.html
 https://github.com/jesseweed/seti-ui/tree/master/styles/_fonts

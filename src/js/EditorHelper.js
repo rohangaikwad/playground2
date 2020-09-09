@@ -9,7 +9,7 @@ module.exports = {
         editor = monaco.editor.create(targetElem, options);
         editor.onDidChangeModelContent(function (e) {
             let file = FileManager.getActiveFile();
-            file.contents = editor.getValue();
+            if(file != null) file.contents = editor.getValue();
         });
 
         this.remeasureFonts();
@@ -35,5 +35,11 @@ module.exports = {
             this.changeLanguage(file.type);
             this.setValue(file.contents);
         }
+    },
+    unloadAll: function () {
+        debugger;
+        FileManager.setActiveFile('');
+        this.setValue('');
+        this.changeLanguage('html');
     }
 }
