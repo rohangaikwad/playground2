@@ -116,9 +116,9 @@ module.exports = {
 const FileManager = require('./FileManager');
 
 const regexScript = new RegExp(/<script.*src.*=.*("|')(?!\w*(?:http|www)).*\.js('|").*<\/script>/, 'gi');
-const regexScriptSrc = new RegExp(/(?<=src.*=.*('|"))(.*)(?=('|"))/, 'gi');
+//const regexScriptSrc = new RegExp(/(?<=src.*=.*('|"))(.*)(?=('|"))/, 'gi');
 const regexLink = new RegExp(/<link.*href.*=.*("|')(?!\w*(?:http|www)).*\.css('|")[^>]*>/, 'gi');
-const regexLinkHref = new RegExp(/(?<=href.*=.*('|"))(.*)(?=('|"))/, 'gi');
+//const regexLinkHref = new RegExp(/(?<=href.*=.*('|"))(.*)(?=('|"))/, 'gi');
 const regexDir = new RegExp(/^(\.|\/)\/?/, 'g');
 
 let activeIframeID = "";
@@ -140,7 +140,9 @@ module.exports = {
         //extract JS files
         let jsScripts = htmlCode.match(regexScript);
         jsScripts.forEach(script => {
-            let srcUrl = script.match(regexScriptSrc)[0];
+            let tempElem = document.createElement('div');
+            tempElem.innerHTML = script;
+            let srcUrl = tempElem.firstChild.getAttribute('src');
             let contents = this.getContents(srcUrl, htmlFileID);
             if (contents) {
                 htmlCode = htmlCode.replace(script, `<script>${contents}</script>`);
@@ -152,7 +154,9 @@ module.exports = {
     
         let linkFiles = htmlCode.match(regexLink);
         linkFiles.forEach(link => {
-            let srcUrl = link.match(regexLinkHref)[0];
+            let tempElem = document.createElement('div');
+            tempElem.innerHTML = link;
+            let srcUrl = tempElem.firstChild.getAttribute('href');
             let contents = this.getContents(srcUrl, htmlFileID);
             if (contents) {
                 htmlCode = htmlCode.replace(link, `<style>${contents}</style>`);
