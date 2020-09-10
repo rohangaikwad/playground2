@@ -6,7 +6,8 @@
     "scripts": {
         "deploy": "gh-pages -d dist",
         "build": "webpack --progress",
-        "gulp": "gulp"
+        "gulp": "gulp",
+        "serve": "http-server dist"
     },
     "repository": {
         "type": "git",
