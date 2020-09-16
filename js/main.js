@@ -14,12 +14,27 @@ module.exports = {
         });
 
         this.remeasureFonts();
-        window.addEventListener('resize', () => editor.layout());
+        window.addEventListener('resize', () => {
+            this.updateLayout();
+        });
     },
-    getValue: function () { return editor.getValue() },
-    setValue: function (value) { editor.setValue(value) },
-    changeLanguage: function (language) { monaco.editor.setModelLanguage(editor.getModel(), language) },
-    remeasureFonts: function () { setTimeout(() => monaco.editor.remeasureFonts(), 1500) },
+    updateLayout: function () {
+        let appHeight = document.querySelector('.app').offsetHeight;
+        document.querySelector('#ide-container > .monaco-editor').style.height = `${appHeight - 100}px`;
+        editor.layout();
+    },
+    getValue: function () {
+        return editor.getValue();
+    },
+    setValue: function (value) {
+        editor.setValue(value);
+    },
+    changeLanguage: function (language) {
+        monaco.editor.setModelLanguage(editor.getModel(), language);
+    },
+    remeasureFonts: function () {
+        setTimeout(() => monaco.editor.remeasureFonts(), 1500);
+    },
     loadFile: function (data) {
         FileManager.setActiveFile(data.id);
         
@@ -38,7 +53,6 @@ module.exports = {
         }
     },
     unloadAll: function () {
-        debugger;
         FileManager.setActiveFile('');
         this.setValue('');
         this.changeLanguage('html');
@@ -70,7 +84,7 @@ let defaultProjectFiles = [
         name: "index.html",
         path: "index.html",
         type: "html",
-        contents: `<!DOCTYPE html>\n<html>\n<head>\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge" />\n\t<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />\n\t<link rel="stylesheet" href="/css/style.css">\n</head>\n<body>\n\t<h1>Hello</h1>\n\t<script src="./js/main.js"></script>\n</body>\n</html>`,
+        contents: `<!DOCTYPE html>\n<html>\n<head>\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge" />\n\t<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />\n\t<link rel="stylesheet" href="css/style.css">\n</head>\n<body>\n\t<h1>Hello</h1>\n\t<script src="js/main.js"></script>\n</body>\n</html>`,
         default: true
     },
     {
@@ -84,8 +98,8 @@ let defaultProjectFiles = [
         id: 'file_5',
         name: "main.js",
         path: "js/main.js",
-        type: "js",
-        contents: `console.log('hello world')`
+        type: "javascript",
+        contents: `console.log('hello world');`
     }
 ]
 
@@ -216,10 +230,13 @@ const EditorHelper = require('./EditorHelper');
 const ToolsManager = require('./ToolsManager');
 const TabsManager = require('./TabsManager');
 const Preview = require('./Preview');
+const UIManager = require('./UIManager');
 
 
 let createNewProject = () => {
 
+    UIManager.init();
+    
     FileManager.init();
     let file = FileManager.getDefaultFile();
 
@@ -236,7 +253,7 @@ let createNewProject = () => {
 }
 
 createNewProject();
-},{"./EditorHelper":1,"./FileManager":2,"./IframeManager":3,"./Preview":5,"./TabsManager":6,"./ToolsManager":7,"./TreeManagement":8}],5:[function(require,module,exports){
+},{"./EditorHelper":1,"./FileManager":2,"./IframeManager":3,"./Preview":5,"./TabsManager":6,"./ToolsManager":7,"./TreeManagement":8,"./UIManager":9}],5:[function(require,module,exports){
 let IframeManager = require('./IframeManager');
 module.exports = {
     init: function() {
@@ -456,7 +473,99 @@ module.exports = {
         }
     }
 }
-},{"./FileManager":2,"./TabsManager":6,"./utils/Utils.js":9}],9:[function(require,module,exports){
+},{"./FileManager":2,"./TabsManager":6,"./utils/Utils.js":10}],9:[function(require,module,exports){
+const Utils = require('./utils/Utils');
+const EditorHelper = require('./EditorHelper');
+
+let hotReload = false;
+let showFiles = true;
+let showPreview = true;
+let showEditor = true;
+
+let appWidths = [
+    'var(--switcher-width)',
+    'var(--sidebar-width)',
+    'minmax(0, 1fr)',
+    'var(--preview-width)',
+];
+
+const appDiv = document.querySelector('.app');
+
+module.exports = {
+    init: function () {
+        this.setAppHeight();
+        this.onWindowResize();
+        this.toggleSidebar();
+        this.toggleEditor();
+        this.togglePreview();
+    },
+    toggleSidebar: function () {
+        let actionBtn = document.querySelector('.tool-switcher .action .files').closest('.action'); 
+        actionBtn.addEventListener('click', () => {
+            showFiles = !showFiles;
+
+            if(showFiles) {
+                actionBtn.classList.add('active');
+                appWidths[1] = 'var(--sidebar-width)';
+            } else {
+                actionBtn.classList.remove('active');
+                appWidths[1] = 0;
+            }
+            
+            appDiv.style.gridTemplateColumns = appWidths.join(' ');
+            EditorHelper.updateLayout();
+        });
+    },
+    toggleEditor: function () {
+        let actionBtn = document.querySelector('.tool-switcher .action .editor').closest('.action'); 
+        actionBtn.addEventListener('click', () => {
+            showEditor = !showEditor;
+
+            if(showEditor) {
+                actionBtn.classList.add('active');
+                appWidths[2] = 'minmax(0, 1fr)';
+            } else {
+                actionBtn.classList.remove('active');
+                appWidths[2] = 0;
+            }
+            
+            appDiv.style.gridTemplateColumns = appWidths.join(' ');
+            EditorHelper.updateLayout();
+        });
+    },
+    togglePreview: function () {
+        let actionBtn = document.querySelector('.tool-switcher .action .preview').closest('.action'); 
+        actionBtn.addEventListener('click', () => {
+            showPreview = !showPreview;
+
+            if(showPreview) {
+                actionBtn.classList.add('active');
+                appWidths[3] = Utils.getPropValue('--preview-width');
+            } else {
+                actionBtn.classList.remove('active');
+                appWidths[3] = 0;
+            }
+            
+            appDiv.style.gridTemplateColumns = appWidths.join(' ');
+            EditorHelper.updateLayout();
+        });
+    },
+    onWindowResize: function() {
+        window.addEventListener('resize', () => {
+            this.setAppHeight();
+        })
+
+        // handle mobile tablet
+        // show only one window at a time.
+    },
+    toggleHotReloading: function() {
+
+    },
+    setAppHeight: function() {
+        Utils.setPropValue('--app-height', `${window.innerHeight}px`);
+    }
+}
+},{"./EditorHelper":1,"./utils/Utils":10}],10:[function(require,module,exports){
 module.exports = {
     sortAlphabetically: (arr, key) => {
         arr.sort((a, b) => {
@@ -464,6 +573,12 @@ module.exports = {
             if (a[key] > b[key]) { return 1; }
             return 0;
         })
+    },
+    getPropValue: (propName) => {
+        return getComputedStyle(document.documentElement).getPropertyValue(propName).trim();
+    },
+    setPropValue: (propName, value) => {
+        document.documentElement.style.setProperty(propName, value);
     }
 }
 },{}]},{},[4]);
