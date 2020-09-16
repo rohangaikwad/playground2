@@ -75,32 +75,39 @@
         </div>
 
         <div class="app">
-            <section id="tools">
-                <div class="tool-switcher">
-                    <ul>
-                        <li class="action">
-                            <i class="codicon files"></i>
-                        </li>
-                        <li class="action">
-                            <i class="codicon search"></i>
-                        </li>
-                        <li class="seperator"></li>
-                        <li class="action">
-                            <i class="codicon fork"></i>
-                        </li>
-                    </ul>
-                </div>
+            <section class="tool-switcher">
+                <ul>
+                    <li class="action active">
+                        <i class="codicon files"></i>
+                    </li>
+                    <li class="action">
+                        <i class="codicon search"></i>
+                    </li>
+                    <li class="action active">
+                        <i class="codicon editor"></i>
+                    </li>
+                    <li class="action">
+                        <i class="codicon console"></i>
+                    </li>
+                    <li class="action active">
+                        <i class="codicon preview"></i>
+                    </li>
+                    <li class="seperator"></li>
+                    <li class="action">
+                        <i class="codicon fork"></i>
+                    </li>
+                </ul>
+            </section>
 
-                <div class="sidebar" data-sidebar="files">
-                    <div data-type="files">
+            <section class="sidebar" data-sidebar="files">
+                <div data-type="files">
 
-                    </div>
                 </div>
+            </section>
 
-                <div class="ide-window">
-                    <div class="tabs"></div>
-                    <div id="ide-container"></div>
-                </div>
+            <section class="ide-window">
+                <div class="tabs"></div>
+                <div id="ide-container"></div>
             </section>
 
             <section id="preview">

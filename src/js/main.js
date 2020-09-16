@@ -5,10 +5,13 @@ const EditorHelper = require('./EditorHelper');
 const ToolsManager = require('./ToolsManager');
 const TabsManager = require('./TabsManager');
 const Preview = require('./Preview');
+const UIManager = require('./UIManager');
 
 
 let createNewProject = () => {
 
+    UIManager.init();
+    
     FileManager.init();
     let file = FileManager.getDefaultFile();
 

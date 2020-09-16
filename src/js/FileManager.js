@@ -23,7 +23,7 @@ let defaultProjectFiles = [
         name: "index.html",
         path: "index.html",
         type: "html",
-        contents: `<!DOCTYPE html>\n<html>\n<head>\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge" />\n\t<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />\n\t<link rel="stylesheet" href="/css/style.css">\n</head>\n<body>\n\t<h1>Hello</h1>\n\t<script src="./js/main.js"></script>\n</body>\n</html>`,
+        contents: `<!DOCTYPE html>\n<html>\n<head>\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge" />\n\t<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />\n\t<link rel="stylesheet" href="css/style.css">\n</head>\n<body>\n\t<h1>Hello</h1>\n\t<script src="js/main.js"></script>\n</body>\n</html>`,
         default: true
     },
     {
@@ -37,8 +37,8 @@ let defaultProjectFiles = [
         id: 'file_5',
         name: "main.js",
         path: "js/main.js",
-        type: "js",
-        contents: `console.log('hello world')`
+        type: "javascript",
+        contents: `console.log('hello world');`
     }
 ]
 

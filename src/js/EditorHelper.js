@@ -13,12 +13,27 @@ module.exports = {
         });
 
         this.remeasureFonts();
-        window.addEventListener('resize', () => editor.layout());
+        window.addEventListener('resize', () => {
+            this.updateLayout();
+        });
     },
-    getValue: function () { return editor.getValue() },
-    setValue: function (value) { editor.setValue(value) },
-    changeLanguage: function (language) { monaco.editor.setModelLanguage(editor.getModel(), language) },
-    remeasureFonts: function () { setTimeout(() => monaco.editor.remeasureFonts(), 1500) },
+    updateLayout: function () {
+        let appHeight = document.querySelector('.app').offsetHeight;
+        document.querySelector('#ide-container > .monaco-editor').style.height = `${appHeight - 100}px`;
+        editor.layout();
+    },
+    getValue: function () {
+        return editor.getValue();
+    },
+    setValue: function (value) {
+        editor.setValue(value);
+    },
+    changeLanguage: function (language) {
+        monaco.editor.setModelLanguage(editor.getModel(), language);
+    },
+    remeasureFonts: function () {
+        setTimeout(() => monaco.editor.remeasureFonts(), 1500);
+    },
     loadFile: function (data) {
         FileManager.setActiveFile(data.id);
         
@@ -37,7 +52,6 @@ module.exports = {
         }
     },
     unloadAll: function () {
-        debugger;
         FileManager.setActiveFile('');
         this.setValue('');
         this.changeLanguage('html');
