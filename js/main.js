@@ -1,22 +1,34 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 let FileManager = require('./FileManager');
+const IframeManager = require('./IframeManager');
 
 let editor = null;
+let newCodeChanges = true; 
 
 module.exports = {
     editor: function () { return editor; },
     create: function (targetElem, options) {
         
         editor = monaco.editor.create(targetElem, options);
-        editor.onDidChangeModelContent(function (e) {
+        editor.onDidChangeModelContent((e) => {
             let file = FileManager.getActiveFile();
             if(file != null) file.contents = editor.getValue();
+            this.editorCodeChanged();
         });
 
         this.remeasureFonts();
         window.addEventListener('resize', () => {
             this.updateLayout();
         });
+    },
+    editorCodeChanged: function() {
+        console.log('Editor contents changed | New code: ', newCodeChanges);
+        if(newCodeChanges) {
+            // reload Iframe
+            IframeManager.reload(false);
+        } else {
+            newCodeChanges = true;
+        }
     },
     updateLayout: function () {
         let appHeight = document.querySelector('.app').offsetHeight;
@@ -26,7 +38,8 @@ module.exports = {
     getValue: function () {
         return editor.getValue();
     },
-    setValue: function (value) {
+    setValue: function (value, isNewCode) {
+        newCodeChanges = isNewCode;
         editor.setValue(value);
     },
     changeLanguage: function (language) {
@@ -49,16 +62,16 @@ module.exports = {
             })
         } else {
             this.changeLanguage(file.type);
-            this.setValue(file.contents);
+            this.setValue(file.contents, false);
         }
     },
     unloadAll: function () {
         FileManager.setActiveFile('');
-        this.setValue('');
+        this.setValue('', false);
         this.changeLanguage('html');
     }
 }
-},{"./FileManager":2}],2:[function(require,module,exports){
+},{"./FileManager":2,"./IframeManager":3}],2:[function(require,module,exports){
 const allowedFileTypes = ["html", "css", "js"];
 
 let activeFile = "";
@@ -138,6 +151,8 @@ const regexDir = new RegExp(/^(\.|\/)\/?/, 'g');
 let activeIframeID = "";
 let iframe = document.querySelector('#preview .browser iframe');
 
+let autoReload = true;
+
 module.exports = {
     buildIframeHtml: function (htmlFileID, iframeElem = iframe) {
         let htmlFile = FileManager.files().filter(file => file.id == htmlFileID)[0];
@@ -145,11 +160,11 @@ module.exports = {
             console.log(`${htmlFile.name} is not a valid HTML file`);
             return;
         }
-    
+
         let html = this.injectCssJs(htmlFileID, htmlFile.contents);
         iframeElem.setAttribute('srcdoc', html);
-    },    
-    
+    },
+
     injectCssJs: function (htmlFileID, htmlCode) {
         //extract JS files
         let jsScripts = htmlCode.match(regexScript);
@@ -165,7 +180,7 @@ module.exports = {
                 htmlCode = htmlCode.replace(script, noScript);
             }
         });
-    
+
         let linkFiles = htmlCode.match(regexLink);
         linkFiles.forEach(link => {
             let tempElem = document.createElement('div');
@@ -179,19 +194,19 @@ module.exports = {
                 htmlCode = htmlCode.replace(link, noLink);
             }
         });
-    
+
         return htmlCode;
     },
-    
+
     getContents: function (srcUrl, htmlFileID) {
         activeIframeID = htmlFileID;
 
         let htmlFile = FileManager.files().filter(file => file.id == htmlFileID)[0];
-    
+
         let discard = srcUrl.match(/^(\.\/|\/)/g);
         if (discard != null) srcUrl = srcUrl.replace(discard[0], '');
-    
-    
+
+
         let directories = null;
         let dirPath = htmlFile.path.replace(htmlFile.name, '');
         if (dirPath.length > 0) {
@@ -199,13 +214,13 @@ module.exports = {
             directories.pop(); // remove the empty array element
             directories.reverse(); // this will help you remove/pop the closest parent directory first
         }
-    
+
         //match parent directories ../../
         if (directories != null) {
             let parentDirectories = srcUrl.match(/\.\./g) || [];
             let parentDirLength = parentDirectories.length;
             srcUrl = srcUrl.replace(/\.\.\//g, '');
-    
+
             for (i = 0; i < parentDirLength && directories.length > 0; i++) {
                 directories.pop();
             }
@@ -213,23 +228,33 @@ module.exports = {
                 srcUrl = `${directories.join("/")}/${srcUrl}`;
             };
         }
-    
+
         let requiredFile = FileManager.files().filter(file => file.path == srcUrl);
         return requiredFile.length ? requiredFile[0].contents : null;
     },
 
-    reload: function () {
-        this.buildIframeHtml(activeIframeID);
+
+    toggleAutoReload: () => {
+        autoReload = !autoReload;
+        return autoReload;
+    },
+
+    getAutoReloadValue: () => autoReload,
+
+    reload: function (isReloadRequestManual) {
+        let shouldReload = isReloadRequestManual;
+        if (!isReloadRequestManual) {
+            shouldReload = autoReload;
+        }
+        if (shouldReload) this.buildIframeHtml(activeIframeID);
     }
 }
 },{"./FileManager":2}],4:[function(require,module,exports){
 const TreeManagement = require('./TreeManagement');
 const IframeManager = require('./IframeManager');
 const FileManager = require('./FileManager');
-const EditorHelper = require('./EditorHelper');
 const ToolsManager = require('./ToolsManager');
 const TabsManager = require('./TabsManager');
-const Preview = require('./Preview');
 const UIManager = require('./UIManager');
 
 
@@ -248,22 +273,10 @@ let createNewProject = () => {
     TabsManager.addTab(file.id);
 
     IframeManager.buildIframeHtml(file.id);
-
-    Preview.init();
 }
 
 createNewProject();
-},{"./EditorHelper":1,"./FileManager":2,"./IframeManager":3,"./Preview":5,"./TabsManager":6,"./ToolsManager":7,"./TreeManagement":8,"./UIManager":9}],5:[function(require,module,exports){
-let IframeManager = require('./IframeManager');
-module.exports = {
-    init: function() {
-        document.querySelector('#preview .navigation .refresh').addEventListener('click', () => this.reload());
-    },
-    reload: function() {
-        IframeManager.reload();
-    }
-}
-},{"./IframeManager":3}],6:[function(require,module,exports){
+},{"./FileManager":2,"./IframeManager":3,"./TabsManager":5,"./ToolsManager":6,"./TreeManagement":7,"./UIManager":8}],5:[function(require,module,exports){
 let FileManager = require('./FileManager');
 let EditorHelper = require('./EditorHelper');
 
@@ -355,7 +368,7 @@ module.exports = {
     closeAllTabs: function () {
     }
 }
-},{"./EditorHelper":1,"./FileManager":2}],7:[function(require,module,exports){
+},{"./EditorHelper":1,"./FileManager":2}],6:[function(require,module,exports){
 module.exports = {
     init: function () {        
         this.selectTool('files'); // default tool
@@ -368,7 +381,7 @@ module.exports = {
         targetElem.setAttribute('data-sidebar', tool);
     }
 }
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 const Utils = require('./utils/Utils.js');
 const FileManager = require('./FileManager');
 const TabsManager = require('./TabsManager');
@@ -473,9 +486,10 @@ module.exports = {
         }
     }
 }
-},{"./FileManager":2,"./TabsManager":6,"./utils/Utils.js":10}],9:[function(require,module,exports){
+},{"./FileManager":2,"./TabsManager":5,"./utils/Utils.js":9}],8:[function(require,module,exports){
 const Utils = require('./utils/Utils');
 const EditorHelper = require('./EditorHelper');
+let IframeManager = require('./IframeManager');
 
 let hotReload = false;
 let showFiles = true;
@@ -498,6 +512,8 @@ module.exports = {
         this.toggleSidebar();
         this.toggleEditor();
         this.togglePreview();
+        this.reloadCode();
+        this.toggleHotReloading();
     },
     toggleSidebar: function () {
         let actionBtn = document.querySelector('.tool-switcher .action .files').closest('.action'); 
@@ -558,14 +574,33 @@ module.exports = {
         // handle mobile tablet
         // show only one window at a time.
     },
+    reloadCode: function() {
+        document.querySelector('#preview .navigation .refresh').addEventListener('click', () => IframeManager.reload(true));
+    },
     toggleHotReloading: function() {
+        let actionBtn = document.querySelector('#preview .navigation .auto-reload');
+
+        let isAutoReloadEnabled = IframeManager.getAutoReloadValue();
+        if(isAutoReloadEnabled) {
+            actionBtn.classList.add('active');
+        }
+
+        actionBtn.addEventListener('click', () => {
+            let isAutoReloadEnabled = IframeManager.toggleAutoReload();
+            if(isAutoReloadEnabled) {
+                actionBtn.classList.add('active');
+            } else {
+                actionBtn.classList.remove('active');
+            }
+        })
+
 
     },
     setAppHeight: function() {
         Utils.setPropValue('--app-height', `${window.innerHeight}px`);
     }
 }
-},{"./EditorHelper":1,"./utils/Utils":10}],10:[function(require,module,exports){
+},{"./EditorHelper":1,"./IframeManager":3,"./utils/Utils":9}],9:[function(require,module,exports){
 module.exports = {
     sortAlphabetically: (arr, key) => {
         arr.sort((a, b) => {
