@@ -118,6 +118,9 @@
                     <div class="search-bar">
                         <input type="text">
                     </div>
+                    <div class="auto-reload">
+                        <span>Auto Reload</span>
+                    </div>
                 </div>
                 <div class="browser">
                     <iframe srcdoc="" sandbox="allow-same-origin allow-scripts"></iframe>
@@ -131,7 +134,7 @@
     </div>
 
     <script src="./js/monaco/app.bundle.js"></script>
-    <script src="./js/main.js"></script>
+    <script src="./js/main.min.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {
@@ -143,13 +146,13 @@
                 .catch(err => console.log(err));
         }
 
-        let style = document.querySelector('#style');
-        setInterval(() => updateStyle(), 2000);
-        let updateStyle = () => {
-            let href = style.getAttribute('data-href')
-            //style.setAttribute('href', `${href}?v=${new Date().getTime()}`);
-        }
-        updateStyle();
+        // let style = document.querySelector('#style');
+        // setInterval(() => updateStyle(), 2000);
+        // let updateStyle = () => {
+        //     let href = style.getAttribute('data-href')
+        //     style.setAttribute('href', `${href}?v=${new Date().getTime()}`);
+        // }
+        // updateStyle();
     </script>
 </body>
 

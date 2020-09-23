@@ -1,5 +1,6 @@
 const Utils = require('./utils/Utils');
 const EditorHelper = require('./EditorHelper');
+let IframeManager = require('./IframeManager');
 
 let hotReload = false;
 let showFiles = true;
@@ -22,6 +23,8 @@ module.exports = {
         this.toggleSidebar();
         this.toggleEditor();
         this.togglePreview();
+        this.reloadCode();
+        this.toggleHotReloading();
     },
     toggleSidebar: function () {
         let actionBtn = document.querySelector('.tool-switcher .action .files').closest('.action'); 
@@ -82,7 +85,26 @@ module.exports = {
         // handle mobile tablet
         // show only one window at a time.
     },
+    reloadCode: function() {
+        document.querySelector('#preview .navigation .refresh').addEventListener('click', () => IframeManager.reload(true));
+    },
     toggleHotReloading: function() {
+        let actionBtn = document.querySelector('#preview .navigation .auto-reload');
+
+        let isAutoReloadEnabled = IframeManager.getAutoReloadValue();
+        if(isAutoReloadEnabled) {
+            actionBtn.classList.add('active');
+        }
+
+        actionBtn.addEventListener('click', () => {
+            let isAutoReloadEnabled = IframeManager.toggleAutoReload();
+            if(isAutoReloadEnabled) {
+                actionBtn.classList.add('active');
+            } else {
+                actionBtn.classList.remove('active');
+            }
+        })
+
 
     },
     setAppHeight: function() {

@@ -1,21 +1,33 @@
 let FileManager = require('./FileManager');
+const IframeManager = require('./IframeManager');
 
 let editor = null;
+let newCodeChanges = true; 
 
 module.exports = {
     editor: function () { return editor; },
     create: function (targetElem, options) {
         
         editor = monaco.editor.create(targetElem, options);
-        editor.onDidChangeModelContent(function (e) {
+        editor.onDidChangeModelContent((e) => {
             let file = FileManager.getActiveFile();
             if(file != null) file.contents = editor.getValue();
+            this.editorCodeChanged();
         });
 
         this.remeasureFonts();
         window.addEventListener('resize', () => {
             this.updateLayout();
         });
+    },
+    editorCodeChanged: function() {
+        console.log('Editor contents changed | New code: ', newCodeChanges);
+        if(newCodeChanges) {
+            // reload Iframe
+            IframeManager.reload(false);
+        } else {
+            newCodeChanges = true;
+        }
     },
     updateLayout: function () {
         let appHeight = document.querySelector('.app').offsetHeight;
@@ -25,7 +37,8 @@ module.exports = {
     getValue: function () {
         return editor.getValue();
     },
-    setValue: function (value) {
+    setValue: function (value, isNewCode) {
+        newCodeChanges = isNewCode;
         editor.setValue(value);
     },
     changeLanguage: function (language) {
@@ -48,12 +61,12 @@ module.exports = {
             })
         } else {
             this.changeLanguage(file.type);
-            this.setValue(file.contents);
+            this.setValue(file.contents, false);
         }
     },
     unloadAll: function () {
         FileManager.setActiveFile('');
-        this.setValue('');
+        this.setValue('', false);
         this.changeLanguage('html');
     }
 }

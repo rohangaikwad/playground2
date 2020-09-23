@@ -9,6 +9,8 @@ const regexDir = new RegExp(/^(\.|\/)\/?/, 'g');
 let activeIframeID = "";
 let iframe = document.querySelector('#preview .browser iframe');
 
+let autoReload = true;
+
 module.exports = {
     buildIframeHtml: function (htmlFileID, iframeElem = iframe) {
         let htmlFile = FileManager.files().filter(file => file.id == htmlFileID)[0];
@@ -16,11 +18,11 @@ module.exports = {
             console.log(`${htmlFile.name} is not a valid HTML file`);
             return;
         }
-    
+
         let html = this.injectCssJs(htmlFileID, htmlFile.contents);
         iframeElem.setAttribute('srcdoc', html);
-    },    
-    
+    },
+
     injectCssJs: function (htmlFileID, htmlCode) {
         //extract JS files
         let jsScripts = htmlCode.match(regexScript);
@@ -36,7 +38,7 @@ module.exports = {
                 htmlCode = htmlCode.replace(script, noScript);
             }
         });
-    
+
         let linkFiles = htmlCode.match(regexLink);
         linkFiles.forEach(link => {
             let tempElem = document.createElement('div');
@@ -50,19 +52,19 @@ module.exports = {
                 htmlCode = htmlCode.replace(link, noLink);
             }
         });
-    
+
         return htmlCode;
     },
-    
+
     getContents: function (srcUrl, htmlFileID) {
         activeIframeID = htmlFileID;
 
         let htmlFile = FileManager.files().filter(file => file.id == htmlFileID)[0];
-    
+
         let discard = srcUrl.match(/^(\.\/|\/)/g);
         if (discard != null) srcUrl = srcUrl.replace(discard[0], '');
-    
-    
+
+
         let directories = null;
         let dirPath = htmlFile.path.replace(htmlFile.name, '');
         if (dirPath.length > 0) {
@@ -70,13 +72,13 @@ module.exports = {
             directories.pop(); // remove the empty array element
             directories.reverse(); // this will help you remove/pop the closest parent directory first
         }
-    
+
         //match parent directories ../../
         if (directories != null) {
             let parentDirectories = srcUrl.match(/\.\./g) || [];
             let parentDirLength = parentDirectories.length;
             srcUrl = srcUrl.replace(/\.\.\//g, '');
-    
+
             for (i = 0; i < parentDirLength && directories.length > 0; i++) {
                 directories.pop();
             }
@@ -84,12 +86,24 @@ module.exports = {
                 srcUrl = `${directories.join("/")}/${srcUrl}`;
             };
         }
-    
+
         let requiredFile = FileManager.files().filter(file => file.path == srcUrl);
         return requiredFile.length ? requiredFile[0].contents : null;
     },
 
-    reload: function () {
-        this.buildIframeHtml(activeIframeID);
+
+    toggleAutoReload: () => {
+        autoReload = !autoReload;
+        return autoReload;
+    },
+
+    getAutoReloadValue: () => autoReload,
+
+    reload: function (isReloadRequestManual) {
+        let shouldReload = isReloadRequestManual;
+        if (!isReloadRequestManual) {
+            shouldReload = autoReload;
+        }
+        if (shouldReload) this.buildIframeHtml(activeIframeID);
     }
 }
